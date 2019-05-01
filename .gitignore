@@ -1,0 +1,5 @@
+googletest/
+.vscode/
+*.o
+*.a
+frd_test
