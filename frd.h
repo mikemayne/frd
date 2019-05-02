@@ -20,12 +20,17 @@
 #include <stdexcept>    // std::invalid_argument
 #include <algorithm>    // std::lower_bound
 
-#include <experimental/filesystem> // gcc 7
-namespace filesystem = std::experimental::filesystem; // gcc 7
 
-// not tested yet:
-// #include <filesystem> // gcc 8
-// namespace filesystem = std::filesystem; // gcc 8
+#if __has_include("experimental/filesystem")
+    #include <filesystem> // gcc 8, untested 
+    namespace filesystem = std::filesystem; // gcc 8
+#elif __has_include("experimental/filesystem")
+    #include <experimental/filesystem> // gcc 7
+    namespace filesystem = std::experimental::filesystem; // gcc 7
+#else
+    #include <boost/filesystem.hpp>
+    namespace filesystem = boost::filesystem;
+#endif
 
 namespace frd {
 
@@ -117,7 +122,7 @@ PolarData<FloatType> import_polardata(std::string folder)
 
     for (const auto & file : files)
     {
-        std::ifstream fs(file.path());
+        std::ifstream fs(file.path().c_str());
         p.push_back(parse<FloatType>(fs));
     }
 

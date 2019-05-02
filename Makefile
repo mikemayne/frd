@@ -11,10 +11,14 @@
 # Remember to tweak this if you move this file.
 GTEST_DIR = googletest/googletest
 
+# point to boost install.  This is default for brew:
+BOOST_INC = /usr/local/Cellar/boost/1.69.0_2/include
+BOOST_LIB = /usr/local/Cellar/boost/1.69.0_2/lib
+
 # Points to the location of the Google Test libraries
 GTEST_LIB_DIR = .
 CPPFLAGS += -isystem $(GTEST_DIR)/include
-CXXFLAGS += -g -Wall -Wextra -pthread -std=c++17 
+CXXFLAGS += -g -Wall -Wextra -pthread -std=c++17 -I$(BOOST_INC) -DBOOST_ERROR_CODE_HEADER_ONLY
 GTEST_LIBS = libgtest.a libgtest_main.a
 
 # All tests produced by this Makefile.  Remember to add new tests you
@@ -51,4 +55,4 @@ frd_test.o : frd_test.cpp frd.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 frd_test : frd_test.o $(GTEST_LIBS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(GTEST_LIB_DIR) -lgtest_main -lpthread $^ -o $@ -lstdc++fs
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(GTEST_LIB_DIR) -L$(BOOST_LIB) -lgtest_main -lpthread -lboost_system -lboost_filesystem $^ -o $@ 

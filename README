@@ -1,0 +1,11 @@
+link with -lstdc++fs, statically so it goes after everything else
+
+Mac OS 
+
+Mac OS doesnt support c++17 std::filesystem yet, so install and link with boost:
+
+$ brew install boost
+
+
+
+
