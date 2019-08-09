@@ -3,3 +3,4 @@ googletest/
 *.o
 *.a
 frd_test
+VS2017/

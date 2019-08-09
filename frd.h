@@ -22,8 +22,10 @@
 #include <stdexcept>    // std::invalid_argument
 #include <algorithm>    // std::lower_bound
 
-
-#if __has_include("experimental/filesystem")
+#ifdef _MSC_VER 
+	#include <filesystem> // Microsoft-specific implementation header file name
+	namespace filesystem = std::experimental::filesystem::v1;
+#elif __has_include("experimental/filesystem")
     #include <filesystem> // gcc 8, untested 
     namespace filesystem = std::filesystem; // gcc 8
 #elif __has_include("experimental/filesystem")

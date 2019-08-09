@@ -160,14 +160,18 @@ namespace {
     TEST(FrdPolarDataTest, TestImportPolarData) {
 
         auto polar = frd::import_polardata<double>("./polar_test");
+		ASSERT_GE(polar.size(), 3);
+		ASSERT_GE(polar[0].size(), 1);
         EXPECT_EQ(polar[0][0].freqHz, 10);
         EXPECT_EQ(polar[0][0].dBSPL, 1);
         EXPECT_EQ(polar[0][0].phaseDeg, 1);
 
+		ASSERT_GE(polar[1].size(), 1);
         EXPECT_EQ(polar[1][0].freqHz, 10);
         EXPECT_EQ(polar[1][0].dBSPL, 2);
         EXPECT_EQ(polar[1][0].phaseDeg, 2);
 
+		ASSERT_GE(polar[2].size(), 1);
         EXPECT_EQ(polar[2][0].freqHz, 10);
         EXPECT_EQ(polar[2][0].dBSPL, 3);
         EXPECT_EQ(polar[2][0].phaseDeg, 3);

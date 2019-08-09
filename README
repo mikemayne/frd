@@ -20,4 +20,13 @@ $ brew install boost
 
 # Windows #
 
+It's not straightforward to share a visual studio project that uses the gtest plugin (PR most welcome if I'm wrong).
+gtest is very simple to setup for Visual studio though, you can find instructions here:
 
+https://docs.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp?view=vs-2019
+
+You'll need to remove precompiled headers under Configuration Properties -> c/c++ -> Pre Compiled Headers -> Pre Compiled Header = Not Using Precompiled headers
+You'll also need to set the current working directory to this directory, Configuration Properties -> Debugging -> Working Directory (just browse, or enter ..\..)
+You might need to remove the precompiled headers too. 
+
+Alternatively you should be able to build the project with the makefile under Cygwin (Not tested).
