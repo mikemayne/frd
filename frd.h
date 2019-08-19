@@ -21,6 +21,8 @@
 #include <sstream>
 #include <stdexcept>    // std::invalid_argument
 #include <algorithm>    // std::lower_bound
+#include <string>
+#include <iostream>
 
 #ifdef _MSC_VER 
 	#include <filesystem> // Microsoft-specific implementation header file name
@@ -112,15 +114,52 @@ findFreq(std::vector<FRDValue<FloatType>>& Frd, FloatType freq)
 template<typename FloatType>
 using PolarData = std::vector<std::vector<FRDValue<FloatType>>>;
 
+bool trailing_number(std::string const& s, double& value) 
+{
+    if (s.empty()) return false;
+
+    auto removePath = s.find_last_of("/\\");
+    removePath = (removePath==std::string::npos) ? 0 : removePath + 1; // remove path (ie ./path/keep 100.ext -> keep 100.ext)
+    auto basename = s.substr(removePath, s.find_last_of(".")-removePath); // remove extension (keep 100.ext -> keep 100)
+    auto pos = basename.find_last_not_of("0123456789.-"); // find number ie keep 100 -> 100
+
+    try {
+        if (pos == std::string::npos) { // there must be a neater way to do this in one
+            value = std::stod(basename);
+            return true;
+        }
+        value = std::stod(basename.substr(pos)); // this branching is ugly
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
+bool trailing_number_compare(std::string const& s1, std::string const& s2)
+{
+    double d1 = 0.0, d2 = 0.0;
+    if (!trailing_number(s1, d1)) return true;
+    if (!trailing_number(s2, d2)) return false;
+
+    return d1 < d2;
+}
+
+bool path_trailing_number_compare(filesystem::directory_entry const& f1, filesystem::directory_entry const& f2)
+{
+    return trailing_number_compare(f1.path().string(), f2.path().string());
+}
+
 // Imports each file as a vector of FRDValues
-// Will import them in alphabetical order, make sure the files are named correctly
+// Files must have an extension
+// Will look for a number at the end of a filename, before extension and use this to order the files.
 template<typename FloatType>
 PolarData<FloatType> import_polardata(std::string folder)
 {
     auto it = filesystem::directory_iterator(folder);
     std::vector<filesystem::directory_entry> files;
     std::copy(filesystem::begin(it), filesystem::end(it), std::back_inserter(files));
-    std::sort(files.begin(), files.end());
+    
+    std::sort(files.begin(), files.end(), path_trailing_number_compare);
 
     PolarData<FloatType> p;
 

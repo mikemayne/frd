@@ -176,4 +176,44 @@ namespace {
         EXPECT_EQ(polar[2][0].dBSPL, 3);
         EXPECT_EQ(polar[2][0].phaseDeg, 3);
     }
+
+    TEST(FrdPolarDataTest, TestTrailingNumber) {
+        double value = 0.0;
+
+        EXPECT_FALSE(frd::trailing_number("", value));
+        EXPECT_FALSE(frd::trailing_number("abcdefghijklmnopqrstuvwxyz ", value));
+
+        EXPECT_TRUE(frd::trailing_number("abcdefghijklmnopqrstuvwxyz 1.txt", value));
+        EXPECT_EQ(1.0, value);
+
+        EXPECT_TRUE(frd::trailing_number("abcdefghijklmnopqrstuvwxyz -1.frd", value));
+        EXPECT_EQ(-1.0, value);
+
+        EXPECT_TRUE(frd::trailing_number("abcdefghijklmnopqrstuvwxyz -999.9.txt", value));
+        EXPECT_EQ(-999.9, value);
+
+        EXPECT_TRUE(frd::trailing_number("1", value)); 
+        EXPECT_EQ(1.0, value);
+
+        EXPECT_TRUE(frd::trailing_number("1.frd", value)); 
+        EXPECT_EQ(1.0, value);
+
+        EXPECT_TRUE(frd::trailing_number("2.txt", value)); 
+        EXPECT_EQ(2.0, value);
+
+        EXPECT_TRUE(frd::trailing_number("3.lol", value)); 
+        EXPECT_EQ(3.0, value);
+    }
+
+    TEST(FrdPolarDataTest, TestTrailingNumberCompare) {
+        EXPECT_TRUE(frd::trailing_number_compare("", ""));
+        EXPECT_TRUE(frd::trailing_number_compare("1", "2"));
+        EXPECT_FALSE(frd::trailing_number_compare("2", "1"));
+
+        EXPECT_TRUE(frd::trailing_number_compare("test name -1", "test name 2"));
+        EXPECT_FALSE(frd::trailing_number_compare("polar name -2", "polar name -3.0"));
+
+        EXPECT_FALSE(frd::trailing_number_compare("3.lol", "2.txt"));
+        EXPECT_FALSE(frd::trailing_number_compare("2.txt", "1.frd"));
+    }
 }
