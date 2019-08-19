@@ -114,7 +114,7 @@ findFreq(std::vector<FRDValue<FloatType>>& Frd, FloatType freq)
 template<typename FloatType>
 using PolarData = std::vector<std::vector<FRDValue<FloatType>>>;
 
-bool trailing_number(std::string const& s, double& value) 
+static bool trailing_number(std::string const& s, double& value) 
 {
     if (s.empty()) return false;
 
@@ -135,7 +135,7 @@ bool trailing_number(std::string const& s, double& value)
     }
 }
 
-bool trailing_number_compare(std::string const& s1, std::string const& s2)
+static bool trailing_number_compare(std::string const& s1, std::string const& s2)
 {
     double d1 = 0.0, d2 = 0.0;
     if (!trailing_number(s1, d1)) return true;
@@ -144,7 +144,7 @@ bool trailing_number_compare(std::string const& s1, std::string const& s2)
     return d1 < d2;
 }
 
-bool path_trailing_number_compare(filesystem::directory_entry const& f1, filesystem::directory_entry const& f2)
+static bool path_trailing_number_compare(filesystem::directory_entry const& f1, filesystem::directory_entry const& f2)
 {
     return trailing_number_compare(f1.path().string(), f2.path().string());
 }
