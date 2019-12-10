@@ -27,6 +27,9 @@
 #ifdef _MSC_VER 
 	#include <filesystem> // Microsoft-specific implementation header file name
 	namespace filesystem = std::experimental::filesystem::v1;
+#elif __APPLE__
+    #include <boost/filesystem.hpp> // 
+    namespace filesystem = boost::filesystem;
 #elif __has_include("experimental/filesystem")
     #include <filesystem> // gcc 8, untested 
     namespace filesystem = std::filesystem; // gcc 8
@@ -144,7 +147,7 @@ static bool trailing_number_compare(std::string const& s1, std::string const& s2
     return d1 < d2;
 }
 
-static bool path_trailing_number_compare(filesystem::directory_entry const& f1, filesystem::directory_entry const& f2)
+static inline bool path_trailing_number_compare(filesystem::directory_entry const& f1, filesystem::directory_entry const& f2)
 {
     return trailing_number_compare(f1.path().string(), f2.path().string());
 }
